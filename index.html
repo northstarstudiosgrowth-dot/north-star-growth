@@ -1,0 +1,1158 @@
+<title>Northstar Growth Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============ TOKENS ============
+     Deliberate single visual world: a night-navigation identity for a
+     business literally named "Northstar" — deep night-navy grounds carrying
+     a brass "guide star" accent, alternating with warm daylight ivory
+     sections. This alternation is the brand's own layout logic, not a
+     light/dark viewer-mode toggle, so tokens are fixed rather than
+     re-derived from prefers-color-scheme. Background + colors are painted
+     explicitly throughout. */
+  :root{
+    --ink:        #0B0E1A;
+    --ink-2:      #121A30;
+    --ink-3:      #1D2745;
+    --ink-line:   #2B3660;
+    --paper:      #F7F3E9;
+    --paper-2:    #EFE8D6;
+    --paper-line: #DCD2B6;
+    --gold:       #C79A44;
+    --gold-bright:#E4BB63;
+    --gold-dim:   #8A6B2E;
+    --teal:       #4E9C86;
+    --ink-text:   #171B29;
+    --slate:      #565C74;
+    --slate-dim:  #9FA6C0;
+    --cream-text: #F2EEE1;
+
+    --serif: "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
+    --sans: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+
+    --container: 1180px;
+    --radius: 14px;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *,*::before,*::after{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
+  }
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink-text);
+    font-family:var(--sans);
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3,h4{
+    font-family:var(--serif);
+    font-weight:600;
+    line-height:1.08;
+    margin:0 0 .5em;
+    text-wrap:balance;
+    color:inherit;
+  }
+  p{ margin:0 0 1em; }
+  a{ color:inherit; text-decoration:none; }
+  img,svg{ display:block; max-width:100%; }
+  ul{ margin:0; padding:0; list-style:none; }
+  button{ font-family:inherit; cursor:pointer; }
+
+  .container{ max-width:var(--container); margin:0 auto; padding:0 28px; }
+  @media (max-width:640px){ .container{ padding:0 20px; } }
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    color:var(--gold-dim);
+    margin-bottom:16px;
+  }
+  section.dark .eyebrow{ color:var(--gold-bright); }
+  .eyebrow::before{
+    content:"";
+    width:22px; height:1px;
+    background:currentColor;
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    font-family:var(--sans);
+    font-weight:700;
+    font-size:15px;
+    padding:15px 28px;
+    border-radius:999px;
+    border:1px solid transparent;
+    transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease, color .25s ease;
+    white-space:nowrap;
+  }
+  .btn-primary{
+    background:linear-gradient(180deg, var(--gold-bright), var(--gold));
+    color:#221604;
+    box-shadow:0 1px 0 rgba(255,255,255,.35) inset, 0 10px 24px -12px rgba(199,154,68,.65);
+  }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 1px 0 rgba(255,255,255,.4) inset, 0 16px 30px -12px rgba(199,154,68,.8); }
+  .btn-ghost-dark{
+    background:transparent;
+    border-color:rgba(242,238,225,.28);
+    color:var(--cream-text);
+  }
+  .btn-ghost-dark:hover{ border-color:var(--gold-bright); color:var(--gold-bright); transform:translateY(-2px); }
+  .btn-ghost-light{
+    background:transparent;
+    border-color:rgba(23,27,41,.2);
+    color:var(--ink-text);
+  }
+  .btn-ghost-light:hover{ border-color:var(--gold-dim); color:var(--gold-dim); transform:translateY(-2px); }
+  .btn-sm{ padding:11px 20px; font-size:13.5px; }
+  .btn:focus-visible{ outline:2px solid var(--gold-bright); outline-offset:3px; }
+
+  /* ============ NAV ============ */
+  #site-nav{
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    background:rgba(11,14,26,.72);
+    backdrop-filter:blur(14px) saturate(140%);
+    -webkit-backdrop-filter:blur(14px) saturate(140%);
+    border-bottom:1px solid rgba(242,238,225,.08);
+    transition:background .3s ease;
+  }
+  .nav-row{
+    display:flex; align-items:center; justify-content:space-between;
+    height:76px;
+  }
+  .brand{ display:flex; align-items:center; gap:11px; color:var(--cream-text); }
+  .brand-mark{ width:30px; height:30px; flex:none; }
+  .brand-word{ font-family:var(--serif); font-size:19px; font-weight:600; letter-spacing:.01em; }
+  .brand-word b{ color:var(--gold-bright); font-weight:600; }
+
+  .nav-links{ display:flex; align-items:center; gap:34px; }
+  .nav-links a{
+    font-size:14.5px; font-weight:600; color:var(--slate-dim);
+    transition:color .2s ease;
+    position:relative;
+  }
+  .nav-links a:hover{ color:var(--cream-text); }
+  .nav-cta{ display:flex; align-items:center; gap:14px; }
+  .nav-call{ font-family:var(--mono); font-size:13.5px; color:var(--slate-dim); }
+  .nav-call:hover{ color:var(--gold-bright); }
+
+  .nav-toggle{
+    display:none; background:none; border:none; width:40px; height:40px;
+    align-items:center; justify-content:center; color:var(--cream-text);
+  }
+  .nav-toggle span, .nav-toggle span::before, .nav-toggle span::after{
+    content:""; display:block; width:22px; height:2px; background:currentColor;
+    position:relative; transition:transform .25s ease, opacity .25s ease;
+  }
+  .nav-toggle span::before{ position:absolute; top:-7px; }
+  .nav-toggle span::after{ position:absolute; top:7px; }
+  .nav-toggle[aria-expanded="true"] span{ background:transparent; }
+  .nav-toggle[aria-expanded="true"] span::before{ top:0; transform:rotate(45deg); }
+  .nav-toggle[aria-expanded="true"] span::after{ top:0; transform:rotate(-45deg); }
+
+  #mobile-menu{
+    display:none;
+    position:fixed; inset:76px 0 0 0; z-index:190;
+    background:var(--ink);
+    padding:8px 20px 32px;
+    overflow-y:auto;
+  }
+  #mobile-menu.open{ display:block; }
+  #mobile-menu a{
+    display:block; padding:16px 4px; font-family:var(--serif); font-size:22px;
+    color:var(--cream-text); border-bottom:1px solid rgba(242,238,225,.1);
+  }
+  #mobile-menu .btn{ margin-top:22px; width:100%; }
+
+  @media (max-width:940px){
+    .nav-links{ display:none; }
+    .nav-call{ display:none; }
+    .nav-cta .btn{ display:none; }
+    .nav-toggle{ display:flex; }
+  }
+
+  /* ============ HERO ============ */
+  #home{
+    position:relative;
+    background:radial-gradient(120% 90% at 50% -10%, #17203D 0%, var(--ink) 55%, #06070D 100%);
+    color:var(--cream-text);
+    padding:158px 0 96px;
+    overflow:hidden;
+  }
+  #hero-canvas{ position:absolute; inset:0; width:100%; height:100%; opacity:.85; }
+  .hero-inner{ position:relative; z-index:2; }
+  .hero-grid{
+    display:grid; grid-template-columns:1.1fr .9fr; gap:56px; align-items:end;
+  }
+  .hero-copy h1{
+    font-size:clamp(2.5rem, 4.6vw, 4.1rem);
+    font-weight:600;
+    letter-spacing:-.01em;
+  }
+  .hero-copy h1 em{
+    font-style:italic; font-weight:500; color:var(--gold-bright);
+  }
+  .hero-sub{
+    font-size:19px; max-width:52ch; color:var(--slate-dim); margin-bottom:34px;
+  }
+  .hero-ctas{ display:flex; flex-wrap:wrap; gap:16px; margin-bottom:44px; }
+
+  .hero-panel{
+    background:rgba(18,26,48,.55);
+    border:1px solid var(--ink-line);
+    border-radius:var(--radius);
+    padding:26px;
+    backdrop-filter:blur(6px);
+  }
+  .hero-panel-label{ font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--slate-dim); margin-bottom:14px; }
+  .hero-panel-quote{ font-family:var(--serif); font-style:italic; font-size:17.5px; color:var(--cream-text); line-height:1.5; }
+  .hero-panel-foot{ margin-top:18px; padding-top:16px; border-top:1px solid var(--ink-line); font-size:13.5px; color:var(--slate-dim); display:flex; justify-content:space-between; }
+
+  .trust-row{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+    background:var(--ink-line);
+    border:1px solid var(--ink-line);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .trust-cell{
+    background:rgba(18,26,48,.65);
+    padding:20px 18px;
+    text-align:left;
+  }
+  .trust-num{ font-family:var(--mono); font-size:26px; font-weight:600; color:var(--gold-bright); }
+  .trust-label{ font-size:12.5px; color:var(--slate-dim); margin-top:4px; letter-spacing:.01em; }
+
+  @media (max-width:940px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .trust-row{ grid-template-columns:repeat(2,1fr); }
+  }
+  @media (max-width:520px){
+    #home{ padding-top:118px; }
+    .hero-ctas .btn{ width:100%; }
+  }
+
+  /* ============ SECTION SCAFFOLD ============ */
+  section{ position:relative; }
+  section.light{ background:var(--paper); color:var(--ink-text); }
+  section.light-2{ background:var(--paper-2); color:var(--ink-text); }
+  section.dark{ background:var(--ink); color:var(--cream-text); }
+  .section-pad{ padding:108px 0; }
+  @media (max-width:720px){ .section-pad{ padding:76px 0; } }
+
+  .section-head{ max-width:680px; margin-bottom:56px; }
+  .section-head h2{ font-size:clamp(1.9rem, 3.4vw, 2.7rem); }
+  .section-head p{ font-size:17.5px; color:var(--slate); max-width:56ch; }
+  section.dark .section-head p{ color:var(--slate-dim); }
+
+  .reveal{ opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  /* ============ ABOUT ============ */
+  .about-grid{ display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start; }
+  .about-copy p{ font-size:17px; color:var(--slate); }
+  .about-copy p strong{ color:var(--ink-text); }
+  .values-list{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:28px; }
+  .value-item{
+    border:1px solid var(--paper-line); border-radius:12px; padding:16px 18px;
+    background:var(--paper);
+  }
+  .value-item h4{ font-family:var(--sans); font-size:14.5px; font-weight:800; margin-bottom:4px; }
+  .value-item p{ font-size:13.5px; color:var(--slate); margin:0; }
+
+  .stat-card-group{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .stat-card{
+    background:var(--ink); color:var(--cream-text);
+    border-radius:var(--radius);
+    padding:26px 22px;
+    border:1px solid var(--ink-line);
+  }
+  .stat-card:nth-child(2){ background:var(--ink-2); }
+  .stat-card:nth-child(4){ background:var(--ink-2); }
+  .stat-card .num{ font-family:var(--mono); font-size:clamp(1.9rem,3vw,2.5rem); color:var(--gold-bright); font-variant-numeric:tabular-nums; }
+  .stat-card .lbl{ font-size:13px; color:var(--slate-dim); margin-top:6px; }
+
+  @media (max-width:860px){
+    .about-grid{ grid-template-columns:1fr; }
+    .values-list{ grid-template-columns:1fr; }
+  }
+
+  /* ============ SERVICES ============ */
+  .service-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  .service-card{
+    background:var(--paper);
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:30px 26px;
+    transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    display:flex; flex-direction:column;
+  }
+  .service-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 24px 44px -24px rgba(23,27,41,.28);
+    border-color:var(--gold-dim);
+  }
+  .service-icon{
+    width:46px; height:46px; border-radius:11px;
+    background:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:20px;
+    transition:background .3s ease;
+  }
+  .service-icon svg{ width:22px; height:22px; stroke:var(--gold-bright); }
+  .service-card:hover .service-icon{ background:var(--gold); }
+  .service-card:hover .service-icon svg{ stroke:#1B1002; }
+  .service-card h3{ font-size:20.5px; margin-bottom:8px; }
+  .service-card .desc{ font-size:14.5px; color:var(--slate); margin-bottom:16px; }
+  .service-benefits{ margin-bottom:22px; flex:1; }
+  .service-benefits li{
+    font-size:13.5px; color:var(--ink-text); padding-left:20px; position:relative; margin-bottom:8px;
+  }
+  .service-benefits li::before{
+    content:""; position:absolute; left:0; top:7px; width:9px; height:9px;
+    border:1.5px solid var(--gold-dim); border-radius:2px; transform:rotate(45deg);
+  }
+  .service-learn{
+    display:inline-flex; align-items:center; gap:7px; font-size:13.5px; font-weight:800;
+    color:var(--ink-text); border-top:1px solid var(--paper-line); padding-top:16px;
+    transition:gap .2s ease, color .2s ease;
+  }
+  .service-learn:hover{ gap:11px; color:var(--gold-dim); }
+  .service-learn svg{ width:14px; height:14px; stroke:currentColor; }
+
+  @media (max-width:940px){ .service-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:640px){ .service-grid{ grid-template-columns:1fr; } }
+
+  /* ============ WHY US (comparison) ============ */
+  .compare-wrap{ border:1px solid var(--ink-line); border-radius:var(--radius); overflow:hidden; }
+  .compare-head{
+    display:grid; grid-template-columns:1.3fr 1fr 1fr;
+    padding:18px 26px; background:var(--ink-2);
+    font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--slate-dim);
+  }
+  .compare-head .col-us{ color:var(--gold-bright); }
+  .compare-row{
+    display:grid; grid-template-columns:1.3fr 1fr 1fr;
+    padding:20px 26px; border-top:1px solid var(--ink-line); align-items:center;
+  }
+  .compare-row .row-label{ font-family:var(--serif); font-size:16.5px; }
+  .compare-row .row-generic{ font-size:14px; color:var(--slate-dim); }
+  .compare-row .row-us{ font-size:14px; color:var(--cream-text); font-weight:600; display:flex; align-items:center; gap:8px; }
+  .row-us svg{ width:15px; height:15px; stroke:var(--gold-bright); flex:none; }
+  .row-generic svg{ width:15px; height:15px; stroke:var(--slate-dim); flex:none; margin-right:6px; vertical-align:-3px; }
+
+  @media (max-width:760px){
+    .compare-head{ display:none; }
+    .compare-row{ grid-template-columns:1fr; gap:6px; padding:18px 20px; }
+    .compare-row .row-label{ margin-bottom:2px; }
+  }
+
+  /* ============ PROCESS ============ */
+  .process-rail{ position:relative; display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
+  .process-rail::before{
+    content:""; position:absolute; top:29px; left:6%; right:6%; height:1px;
+    background:repeating-linear-gradient(90deg, var(--paper-line) 0 8px, transparent 8px 14px);
+  }
+  .process-step{ position:relative; z-index:1; }
+  .process-num{
+    width:58px; height:58px; border-radius:50%;
+    background:var(--paper); border:1px solid var(--paper-line);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:16px; color:var(--gold-dim); font-weight:600;
+    margin-bottom:22px;
+    transition:background .4s ease, border-color .4s ease, color .4s ease, transform .4s ease;
+  }
+  .process-step.in .process-num{ background:var(--ink); border-color:var(--ink); color:var(--gold-bright); transform:scale(1.06); }
+  .process-step h3{ font-size:19px; margin-bottom:8px; }
+  .process-step p{ font-size:14px; color:var(--slate); }
+
+  @media (max-width:820px){
+    .process-rail{ grid-template-columns:1fr; gap:36px; }
+    .process-rail::before{ top:0; bottom:0; left:29px; right:auto; width:1px; height:auto; background:repeating-linear-gradient(180deg, var(--paper-line) 0 8px, transparent 8px 14px); }
+  }
+
+  /* ============ CASE STUDIES ============ */
+  .case-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  .case-card{
+    border:1px solid var(--paper-line); border-radius:var(--radius); overflow:hidden;
+    background:var(--paper); display:flex; flex-direction:column;
+    transition:box-shadow .3s ease, transform .3s ease;
+  }
+  .case-card:hover{ transform:translateY(-5px); box-shadow:0 22px 40px -26px rgba(23,27,41,.3); }
+  .case-visual{
+    height:150px; position:relative; overflow:hidden;
+    display:flex; align-items:flex-end; padding:16px 18px;
+  }
+  .case-visual::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(11,14,26,0) 30%, rgba(11,14,26,.55)); }
+  .case-badge{
+    position:relative; z-index:1;
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:#fff; background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.3);
+    padding:5px 10px; border-radius:999px;
+  }
+  .case-body{ padding:24px 22px 26px; flex:1; display:flex; flex-direction:column; }
+  .case-sector{ font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--gold-dim); margin-bottom:8px; }
+  .case-body h3{ font-size:19px; margin-bottom:10px; }
+  .case-row{ font-size:13.5px; margin-bottom:8px; color:var(--slate); }
+  .case-row b{ color:var(--ink-text); font-weight:700; }
+  .case-stats{ display:flex; gap:10px; margin:16px 0 18px; flex-wrap:wrap; }
+  .case-stat{ background:var(--paper-2); border:1px solid var(--paper-line); border-radius:9px; padding:9px 12px; }
+  .case-stat .n{ font-family:var(--mono); font-weight:700; font-size:16px; color:var(--gold-dim); }
+  .case-stat .l{ font-size:11px; color:var(--slate); }
+  .case-cta{ margin-top:auto; font-size:13.5px; font-weight:800; display:inline-flex; align-items:center; gap:7px; }
+  .case-cta svg{ width:14px; height:14px; stroke:currentColor; }
+  .case-note{ font-size:12px; color:var(--slate); margin-top:22px; max-width:70ch; }
+
+  @media (max-width:940px){ .case-grid{ grid-template-columns:1fr; } }
+
+  /* ============ FAQ ============ */
+  .faq-list{ max-width:840px; }
+  .faq-item{ border-bottom:1px solid var(--paper-line); }
+  .faq-q{
+    width:100%; background:none; border:none; text-align:left;
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    padding:24px 2px; font-family:var(--serif); font-size:18.5px; color:var(--ink-text);
+  }
+  .faq-q .plus{
+    width:26px; height:26px; border-radius:50%; border:1px solid var(--paper-line); flex:none;
+    display:flex; align-items:center; justify-content:center; position:relative;
+    transition:transform .3s ease, background .3s ease, border-color .3s ease;
+  }
+  .faq-q .plus::before, .faq-q .plus::after{ content:""; position:absolute; background:var(--ink-text); transition:transform .3s ease, opacity .3s ease; }
+  .faq-q .plus::before{ width:10px; height:1.4px; }
+  .faq-q .plus::after{ width:1.4px; height:10px; }
+  .faq-item.open .faq-q .plus{ background:var(--ink); border-color:var(--ink); transform:rotate(180deg); }
+  .faq-item.open .faq-q .plus::before, .faq-item.open .faq-q .plus::after{ background:var(--gold-bright); }
+  .faq-item.open .faq-q .plus::after{ opacity:0; }
+  .faq-a{ max-height:0; overflow:hidden; transition:max-height .35s ease; }
+  .faq-a-inner{ padding:0 34px 24px 2px; font-size:15px; color:var(--slate); max-width:66ch; }
+
+  /* ============ CONTACT ============ */
+  #contact{ background:radial-gradient(120% 100% at 50% 110%, #17203D 0%, var(--ink) 55%, #06070D 100%); color:var(--cream-text); }
+  .contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start; }
+  .contact-info-row{ display:flex; gap:14px; padding:18px 0; border-top:1px solid var(--ink-line); }
+  .contact-info-row:last-child{ border-bottom:1px solid var(--ink-line); }
+  .contact-info-row svg{ width:19px; height:19px; stroke:var(--gold-bright); flex:none; margin-top:2px; }
+  .contact-info-row .lbl{ font-size:12px; color:var(--slate-dim); letter-spacing:.05em; text-transform:uppercase; margin-bottom:3px; font-family:var(--mono); }
+  .contact-info-row .val{ font-size:16px; font-weight:600; }
+  .contact-info-row a:hover{ color:var(--gold-bright); }
+
+  .quote-form{ background:rgba(18,26,48,.55); border:1px solid var(--ink-line); border-radius:var(--radius); padding:30px; backdrop-filter:blur(6px); }
+  .form-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field label{ font-size:12.5px; color:var(--slate-dim); font-family:var(--mono); letter-spacing:.04em; }
+  .field input, .field select, .field textarea{
+    background:rgba(11,14,26,.55); border:1px solid var(--ink-line); border-radius:9px;
+    padding:12px 13px; color:var(--cream-text); font-family:var(--sans); font-size:14.5px;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{ outline:2px solid var(--gold-bright); outline-offset:1px; border-color:var(--gold-bright); }
+  .field textarea{ resize:vertical; min-height:88px; }
+  .form-foot{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:6px; flex-wrap:wrap; }
+  .form-note{ font-size:12.5px; color:var(--slate-dim); }
+  #form-status{ font-size:13px; color:var(--gold-bright); margin-top:10px; min-height:1em; }
+
+  @media (max-width:860px){
+    .contact-grid{ grid-template-columns:1fr; gap:44px; }
+    .form-row{ grid-template-columns:1fr; }
+  }
+
+  /* ============ FOOTER ============ */
+  footer{ background:#06070D; color:var(--slate-dim); padding:44px 0 118px; }
+  .footer-row{ display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; border-top:1px solid var(--ink-line); padding-top:28px; }
+  .footer-brand{ display:flex; align-items:center; gap:10px; color:var(--cream-text); font-family:var(--serif); font-size:16px; }
+  .footer-brand svg{ width:22px; height:22px; }
+  .footer-links{ display:flex; gap:22px; font-size:13.5px; }
+  .footer-links a:hover{ color:var(--gold-bright); }
+  .footer-fine{ font-size:12.5px; margin-top:22px; }
+
+  @media (max-width:720px){ footer{ padding-bottom:130px; } .footer-row{ flex-direction:column; align-items:flex-start; } }
+
+  /* ============ MOBILE STICKY CTA ============ */
+  #mobile-sticky{
+    display:none; position:fixed; left:0; right:0; bottom:0; z-index:210;
+    background:rgba(11,14,26,.96); backdrop-filter:blur(10px);
+    border-top:1px solid var(--ink-line);
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    gap:10px;
+  }
+  #mobile-sticky a{ flex:1; text-align:center; }
+  @media (max-width:720px){ #mobile-sticky{ display:flex; } }
+
+  ::selection{ background:var(--gold); color:#1B1002; }
+</style>
+
+<nav id="site-nav">
+  <div class="container nav-row">
+    <a href="#home" class="brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14.5" stroke="#C79A44" stroke-width="1.1"/>
+        <path d="M16 5 L18.1 13.9 L27 16 L18.1 18.1 L16 27 L13.9 18.1 L5 16 L13.9 13.9 Z" fill="#E4BB63"/>
+      </svg>
+      <span class="brand-word">North<b>star</b></span>
+    </a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#why-us">Why Us</a>
+      <a href="#process">Process</a>
+      <a href="#results">Results</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav-cta">
+      <a class="nav-call" href="tel:+447592881276">07592 881276</a>
+      <a class="btn btn-primary btn-sm" href="#contact">Get a Free Quote</a>
+    </div>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><span></span></button>
+  </div>
+</nav>
+
+<div id="mobile-menu">
+  <a href="#about">About</a>
+  <a href="#services">Services</a>
+  <a href="#why-us">Why Us</a>
+  <a href="#process">Process</a>
+  <a href="#results">Results</a>
+  <a href="#faq">FAQ</a>
+  <a href="#contact">Contact</a>
+  <a class="btn btn-primary" href="#contact">Get a Free Quote</a>
+</div>
+
+<section id="home">
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
+  <div class="container hero-inner">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Growth studio · Slough, Berkshire</p>
+        <h1>More qualified enquiries, <em>less</em> guesswork, for UK businesses ready to grow.</h1>
+        <p class="hero-sub">Northstar Growth Studio plans, builds and automates the systems — strategy, websites, AI workflows and lead generation — that turn everyday traffic into booked, paying customers.</p>
+        <div class="hero-ctas">
+          <a href="#contact" class="btn btn-primary">Get a Free Quote</a>
+          <a href="tel:+447592881276" class="btn btn-ghost-dark">Speak to Us</a>
+        </div>
+        <div class="trust-row">
+          <div class="trust-cell"><div class="trust-num" data-count="13">0</div><div class="trust-label">Businesses guided</div></div>
+          <div class="trust-cell"><div class="trust-num" data-count="3">0</div><div class="trust-label">Years in growth &amp; automation</div></div>
+          <div class="trust-cell"><div class="trust-num" data-count="10" data-suffix="+">0</div><div class="trust-label">Projects delivered</div></div>
+          <div class="trust-cell"><div class="trust-num" data-count="99" data-suffix="%">0</div><div class="trust-label">Client satisfaction</div></div>
+        </div>
+      </div>
+      <div class="hero-panel">
+        <div class="hero-panel-label">Current bearing</div>
+        <p class="hero-panel-quote">"Every engagement starts with one question: where are your best enquiries actually getting lost? We fix that first, then build the system that keeps it fixed."</p>
+        <div class="hero-panel-foot">
+          <span>Northstar Growth Studio</span>
+          <span>Berkshire · SL2</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="light section-pad">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-copy reveal">
+        <p class="eyebrow">About Northstar</p>
+        <h2>Built for businesses that are done guessing what's working.</h2>
+        <p>Northstar Growth Studio is a growth, web and automation studio based in Slough, Berkshire, working with small and mid-sized businesses across the UK. We plan the strategy, build the website or system, and set up the automation that carries the workload — so enquiries keep arriving whether or not anyone's watching the inbox.</p>
+        <p>We started Northstar because too many good businesses were being let down by agencies that treated a website as the finish line rather than the starting point. <strong>Everything we build is judged on one thing: does it produce more qualified enquiries, bookings or sales than before.</strong></p>
+        <p>Clients choose us because we stay close to the numbers, explain decisions in plain English, and treat every project like it's our own business on the line — not because we're the biggest name in the room, but because we're the most accountable one.</p>
+        <div class="values-list">
+          <div class="value-item"><h4>Clarity</h4><p>Plain-English plans and reporting, no jargon left unexplained.</p></div>
+          <div class="value-item"><h4>Craft</h4><p>Every site, funnel and workflow built to a standard we'd put our own name on.</p></div>
+          <div class="value-item"><h4>Accountability</h4><p>We track the metrics that matter and own the results, good or bad.</p></div>
+          <div class="value-item"><h4>Partnership</h4><p>We work as an extension of your team, not a vendor that disappears post-launch.</p></div>
+        </div>
+      </div>
+      <div class="stat-card-group reveal">
+        <div class="stat-card"><div class="num">13</div><div class="lbl">Loyal customers currently working with us</div></div>
+        <div class="stat-card"><div class="num">3</div><div class="lbl">Years of growth &amp; automation experience</div></div>
+        <div class="stat-card"><div class="num">10+</div><div class="lbl">Projects completed for UK SMBs</div></div>
+        <div class="stat-card"><div class="num">99%</div><div class="lbl">Customer satisfaction rate</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="services" class="light-2 section-pad">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">What we do</p>
+      <h2>Five disciplines. One outcome: more of the right customers.</h2>
+      <p>Each service works on its own — together, they form a system where strategy, design, automation and data all pull in the same direction.</p>
+    </div>
+    <div class="service-grid">
+
+      <div class="service-card reveal" data-service="Growth Strategy">
+        <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19 L10 12 L14 15 L20 6"/><path d="M14 6h6v6"/></svg></div>
+        <h3>Growth Strategy</h3>
+        <p class="desc">We identify where enquiries are being lost, remove the bottlenecks, and build a practical roadmap prioritised by impact.</p>
+        <ul class="service-benefits">
+          <li>A clear, prioritised 90-day growth plan</li>
+          <li>Bottlenecks and quick wins identified early</li>
+          <li>Decisions backed by data, not guesswork</li>
+        </ul>
+        <a href="#contact" class="service-learn">Learn more <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+
+      <div class="service-card reveal" data-service="Web Design &amp; Development">
+        <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/></svg></div>
+        <h3>Web Design &amp; Development</h3>
+        <p class="desc">High-performance websites designed around enquiries, not just aesthetics — fast, mobile-first and built to convert.</p>
+        <ul class="service-benefits">
+          <li>Conversion-focused layouts and clear CTAs</li>
+          <li>Fast-loading, mobile-first builds</li>
+          <li>Easy to update — no agency lock-in</li>
+        </ul>
+        <a href="#contact" class="service-learn">Learn more <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+
+      <div class="service-card reveal" data-service="AI &amp; Business Automation">
+        <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></div>
+        <h3>AI &amp; Business Automation</h3>
+        <p class="desc">We automate the repetitive processes eating your team's time and build smarter, faster customer journeys.</p>
+        <ul class="service-benefits">
+          <li>Hours saved on manual admin every week</li>
+          <li>Faster response times on new enquiries</li>
+          <li>Consistent follow-up, even outside office hours</li>
+        </ul>
+        <a href="#contact" class="service-learn">Learn more <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+
+      <div class="service-card reveal" data-service="Lead Generation Systems">
+        <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8L3 5Z"/></svg></div>
+        <h3>Lead Generation Systems</h3>
+        <p class="desc">Conversion-focused funnels and enquiry systems engineered to turn traffic into genuine, sales-ready opportunities.</p>
+        <ul class="service-benefits">
+          <li>More qualified enquiries from existing traffic</li>
+          <li>Funnels built around your actual sales process</li>
+          <li>Clear tracking from first click to booked call</li>
+        </ul>
+        <a href="#contact" class="service-learn">Learn more <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+
+      <div class="service-card reveal" data-service="Digital Optimisation">
+        <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></div>
+        <h3>Digital Optimisation</h3>
+        <p class="desc">We continuously improve websites, processes and campaigns using measurable data — not one-off guesses.</p>
+        <ul class="service-benefits">
+          <li>Ongoing testing on the pages that matter most</li>
+          <li>Clear monthly reporting on what's improving</li>
+          <li>Budget spent on what's proven to work</li>
+        </ul>
+        <a href="#contact" class="service-learn">Learn more <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="why-us" class="dark section-pad">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Why choose us</p>
+      <h2>The difference shows up in how the work actually gets run.</h2>
+      <p>Most agencies compete on the same list of promises. Here's what changes when you work with a small studio that has thirteen clients to keep happy, not thirteen hundred.</p>
+    </div>
+    <div class="compare-wrap reveal">
+      <div class="compare-head">
+        <div>Where it matters</div>
+        <div>Typical agency</div>
+        <div class="col-us">Northstar</div>
+      </div>
+
+      <div class="compare-row"><div class="row-label">Quality</div><div class="row-generic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Templated builds, reused designs</div><div class="row-us"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Every project built around your business, not a template</div></div>
+
+      <div class="compare-row"><div class="row-label">Reliability</div><div class="row-generic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Account handed to junior staff post-sale</div><div class="row-us"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Direct access to the people doing the work</div></div>
+
+      <div class="compare-row"><div class="row-label">Experience</div><div class="row-generic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Generic playbooks across every industry</div><div class="row-us"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>3 years focused specifically on UK SMB growth</div></div>
+
+      <div class="compare-row"><div class="row-label">Customer service</div><div class="row-generic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Ticket queues and slow email replies</div><div class="row-us"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>A phone number that actually gets answered</div></div>
+
+      <div class="compare-row"><div class="row-label">Speed</div><div class="row-generic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Months of sign-off before anything ships</div><div class="row-us"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Lean team, fast decisions, faster delivery</div></div>
+
+      <div class="compare-row"><div class="row-label">Transparency</div><div class="row-generic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Vague reporting, unclear pricing</div><div class="row-us"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Plain-English reporting and upfront pricing</div></div>
+
+      <div class="compare-row"><div class="row-label">Results</div><div class="row-generic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Vanity metrics like "impressions"</div><div class="row-us"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Tracked against enquiries, bookings and sales</div></div>
+
+      <div class="compare-row"><div class="row-label">Technology &amp; innovation</div><div class="row-generic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Off-the-shelf tools bolted together</div><div class="row-us"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>AI and automation built around your workflow</div></div>
+
+    </div>
+  </div>
+</section>
+
+<section id="process" class="light section-pad">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">How it works</p>
+      <h2>A straightforward four-step path from first call to compounding growth.</h2>
+      <p>No lengthy onboarding, no confusing jargon — just a clear sequence we follow with every client, from the first conversation onward.</p>
+    </div>
+    <div class="process-rail">
+      <div class="process-step reveal"><div class="process-num">01</div><h3>Discover</h3><p>We learn your business, your customers and exactly where enquiries are currently being won or lost.</p></div>
+      <div class="process-step reveal"><div class="process-num">02</div><h3>Plan</h3><p>We map the right mix of strategy, website, automation and lead generation for your goals and budget.</p></div>
+      <div class="process-step reveal"><div class="process-num">03</div><h3>Deliver</h3><p>We design, build and launch the system — website, funnel or automation — without disrupting what already works.</p></div>
+      <div class="process-step reveal"><div class="process-num">04</div><h3>Grow</h3><p>We track the results and keep optimising, so performance keeps compounding long after launch.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="results" class="light-2 section-pad">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Case studies</p>
+      <h2>What a Northstar engagement can look like.</h2>
+      <p>We're a young studio still building our public case-study library. The examples below are illustrative — representative of the kind of problem, approach and outcome a similar engagement targets — not claims about specific completed clients.</p>
+    </div>
+    <div class="case-grid">
+
+      <div class="case-card reveal">
+        <div class="case-visual" style="background:linear-gradient(135deg,#1D2745,#0B0E1A 70%)"><span class="case-badge">Illustrative example</span></div>
+        <div class="case-body">
+          <div class="case-sector">Trades &amp; home services</div>
+          <h3>Turning missed calls into booked jobs</h3>
+          <p class="case-row"><b>Problem:</b> Enquiries were arriving by phone and Facebook but going unanswered outside working hours.</p>
+          <p class="case-row"><b>Solution:</b> A new enquiry-focused website plus automated call and message follow-up.</p>
+          <p class="case-row"><b>Result:</b> A steady lift in booked jobs from the same volume of traffic.</p>
+          <div class="case-stats">
+            <div class="case-stat"><div class="n">+40%</div><div class="l">Target enquiry lift</div></div>
+            <div class="case-stat"><div class="n">&lt;5min</div><div class="l">Target response time</div></div>
+          </div>
+          <a href="#contact" class="case-cta">Discuss a similar project <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+
+      <div class="case-card reveal">
+        <div class="case-visual" style="background:linear-gradient(135deg,#2B3660,#0B0E1A 70%)"><span class="case-badge">Illustrative example</span></div>
+        <div class="case-body">
+          <div class="case-sector">Professional services</div>
+          <h3>Replacing manual admin with automation</h3>
+          <p class="case-row"><b>Problem:</b> A small consultancy losing hours each week to manual quoting and follow-up emails.</p>
+          <p class="case-row"><b>Solution:</b> Automated quote generation and a structured follow-up sequence.</p>
+          <p class="case-row"><b>Result:</b> Meaningful weekly time saved and faster quote turnaround.</p>
+          <div class="case-stats">
+            <div class="case-stat"><div class="n">~6hrs</div><div class="l">Target time saved/week</div></div>
+            <div class="case-stat"><div class="n">2x</div><div class="l">Target quote speed</div></div>
+          </div>
+          <a href="#contact" class="case-cta">Discuss a similar project <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+
+      <div class="case-card reveal">
+        <div class="case-visual" style="background:linear-gradient(135deg,#8A6B2E,#0B0E1A 75%)"><span class="case-badge">Illustrative example</span></div>
+        <div class="case-body">
+          <div class="case-sector">Retail &amp; e-commerce</div>
+          <h3>Turning traffic into a real sales funnel</h3>
+          <p class="case-row"><b>Problem:</b> Reasonable website traffic with very little converting into actual sales.</p>
+          <p class="case-row"><b>Solution:</b> A restructured funnel, clearer offers and ongoing conversion testing.</p>
+          <p class="case-row"><b>Result:</b> A steadily improving conversion rate month over month.</p>
+          <div class="case-stats">
+            <div class="case-stat"><div class="n">+25%</div><div class="l">Target conversion lift</div></div>
+            <div class="case-stat"><div class="n">90 days</div><div class="l">Target optimisation cycle</div></div>
+          </div>
+          <a href="#contact" class="case-cta">Discuss a similar project <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+
+    </div>
+    <p class="case-note reveal">Figures above are illustrative targets used for planning purposes, not guaranteed or historical results. Real case studies will replace these as engagements complete.</p>
+  </div>
+</section>
+
+<section id="faq" class="light section-pad">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">FAQ</p>
+      <h2>Questions we hear most from UK business owners.</h2>
+      <p>Can't find what you're looking for? Give us a call — we'd rather answer it directly.</p>
+    </div>
+    <div class="faq-list reveal">
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">What does Northstar Growth Studio actually do?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">We help UK small and mid-sized businesses get more qualified enquiries and run more efficiently, through growth strategy, conversion-focused websites, AI-driven automation and lead generation systems — usually some combination of the four, depending on where your business needs it most.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">How quickly can I expect to see results?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">It depends on the service. Automation and quick website fixes can show impact within weeks; a full website rebuild or lead generation system typically needs 60–90 days to reach its full run rate as we test and refine. We'll give you a realistic timeline before any work begins.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">Do you only work with businesses in Berkshire?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">We're based in Slough, Berkshire, but we work with small and mid-sized businesses across the UK. Most of our process — strategy calls, design reviews, reporting — works perfectly well remotely.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">What size of business do you typically work with?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Mainly small and mid-sized UK businesses — from sole traders and local trades through to established firms with a small team handling sales and marketing. If you're relying on enquiries to keep the business moving, we're built for you.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">How much does a project cost?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">It depends entirely on scope — a single automation workflow costs very differently from a full website rebuild with an ongoing lead generation system. We quote after understanding your goals in a free initial call, so you're never paying for more than you need.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">Do I need a new website, or can automation alone help?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Not always. If your website already converts reasonably well, automation and lead generation improvements alone can move the needle. We'll always recommend the smallest change that gets you the outcome, not the biggest project.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">What's included in a Growth Strategy engagement?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">A full review of your current enquiry journey, a clear breakdown of where opportunities are being lost, and a prioritised roadmap covering strategy, website, automation and lead generation — with realistic timelines and no obligation to use us for the delivery.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">How do you measure success?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Against enquiries, bookings and sales — not vanity metrics like impressions or page views. Every project starts with an agreed set of measurable goals, and we report against those goals on a regular schedule.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">I already have a website — can you just improve it?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Yes. Plenty of our work is optimisation rather than a rebuild — improving page speed, clarifying calls-to-action, adding automation, or restructuring a funnel on a site that's otherwise working fine.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">How do we get started?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Fill in the quote form below or call us directly. We'll book a short, free call to understand your goals, then follow up with a clear, no-obligation plan and quote.</div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="section-pad">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Get in touch</p>
+      <h2>Tell us where growth is stalling. We'll tell you how to fix it.</h2>
+      <p>Book a free, no-obligation quote call — most conversations take fifteen minutes and leave you with at least one thing to action immediately.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="reveal">
+        <div class="contact-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 2 .7 3a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c1 .4 2 .6 3 .7a2 2 0 0 1 1.7 2Z"/></svg>
+          <div><div class="lbl">Call</div><a class="val" href="tel:+447592881276">07592 881276</a><br><a class="val" href="tel:+447417590100">07417 590100</a></div>
+        </div>
+        <div class="contact-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>
+          <div><div class="lbl">Email</div><a class="val" href="mailto:northstarstudiosgrowth@gmail.com">northstarstudiosgrowth@gmail.com</a></div>
+        </div>
+        <div class="contact-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div><div class="lbl">Based in</div><div class="val">Slough, Berkshire · SL2 1NF</div></div>
+        </div>
+      </div>
+
+      <form class="quote-form reveal" id="quote-form">
+        <div class="form-row">
+          <div class="field"><label for="f-name">Full name</label><input id="f-name" name="name" type="text" required autocomplete="name"></div>
+          <div class="field"><label for="f-phone">Phone</label><input id="f-phone" name="phone" type="tel" autocomplete="tel"></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" required autocomplete="email"></div>
+          <div class="field"><label for="f-service">Interested in</label>
+            <select id="f-service" name="service">
+              <option>Growth Strategy</option>
+              <option>Web Design &amp; Development</option>
+              <option>AI &amp; Business Automation</option>
+              <option>Lead Generation Systems</option>
+              <option>Digital Optimisation</option>
+              <option>Not sure yet</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:18px;">
+          <label for="f-msg">What are you hoping to achieve?</label>
+          <textarea id="f-msg" name="message" placeholder="e.g. We get traffic but not enough bookings..."></textarea>
+        </div>
+        <div class="form-foot">
+          <span class="form-note">We reply within one business day.</span>
+          <button type="submit" class="btn btn-primary btn-sm">Get a Free Quote</button>
+        </div>
+        <div id="form-status" role="status"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-row">
+      <div class="footer-brand">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="14.5" stroke="#C79A44" stroke-width="1.1"/><path d="M16 5 L18.1 13.9 L27 16 L18.1 18.1 L16 27 L13.9 18.1 L5 16 L13.9 13.9 Z" fill="#E4BB63"/></svg>
+        Northstar Growth Studio
+      </div>
+      <div class="footer-links">
+        <a href="#services">Services</a>
+        <a href="#why-us">Why Us</a>
+        <a href="#results">Results</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+    <p class="footer-fine">© <span id="year"></span> Northstar Growth Studio · Slough, Berkshire, SL2 1NF · Growth strategy, web design, automation &amp; lead generation for UK businesses.</p>
+  </div>
+</footer>
+
+<div id="mobile-sticky">
+  <a href="tel:+447592881276" class="btn btn-ghost-dark btn-sm">Call Now</a>
+  <a href="#contact" class="btn btn-primary btn-sm">Get a Free Quote</a>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* Footer year */
+  var yearEl = document.getElementById("year");
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  /* Mobile nav toggle */
+  var toggle = document.getElementById("nav-toggle");
+  var menu = document.getElementById("mobile-menu");
+  if (toggle && menu){
+    toggle.addEventListener("click", function(){
+      var open = menu.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      document.body.style.overflow = open ? "hidden" : "";
+    });
+    menu.querySelectorAll("a").forEach(function(a){
+      a.addEventListener("click", function(){
+        menu.classList.remove("open");
+        toggle.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+      });
+    });
+  }
+
+  /* Scroll reveal */
+  var revealEls = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window && !reduceMotion){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          entry.target.classList.add("in");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add("in"); });
+  }
+
+  /* Process step activation (numbered circles light up on scroll) */
+  var steps = document.querySelectorAll(".process-step");
+  if ("IntersectionObserver" in window){
+    var stepIo = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) entry.target.classList.add("in");
+      });
+    }, { threshold: 0.4 });
+    steps.forEach(function(s){ stepIo.observe(s); });
+  } else {
+    steps.forEach(function(s){ s.classList.add("in"); });
+  }
+
+  /* Animated stat counters */
+  var counters = document.querySelectorAll(".trust-num[data-count]");
+  function animateCounter(el){
+    var target = parseInt(el.getAttribute("data-count"), 10) || 0;
+    var suffix = el.getAttribute("data-suffix") || "";
+    if (reduceMotion){ el.textContent = target + suffix; return; }
+    var start = null;
+    var duration = 1100;
+    function step(ts){
+      if (!start) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target) + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  if (counters.length){
+    if ("IntersectionObserver" in window){
+      var cIo = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if (entry.isIntersecting){
+            animateCounter(entry.target);
+            cIo.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.6 });
+      counters.forEach(function(c){ cIo.observe(c); });
+    } else {
+      counters.forEach(animateCounter);
+    }
+  }
+
+  /* FAQ accordion */
+  document.querySelectorAll(".faq-item").forEach(function(item){
+    var btn = item.querySelector(".faq-q");
+    var panel = item.querySelector(".faq-a");
+    btn.addEventListener("click", function(){
+      var isOpen = item.classList.contains("open");
+      document.querySelectorAll(".faq-item.open").forEach(function(other){
+        if (other !== item){
+          other.classList.remove("open");
+          other.querySelector(".faq-q").setAttribute("aria-expanded", "false");
+          other.querySelector(".faq-a").style.maxHeight = null;
+        }
+      });
+      if (isOpen){
+        item.classList.remove("open");
+        btn.setAttribute("aria-expanded", "false");
+        panel.style.maxHeight = null;
+      } else {
+        item.classList.add("open");
+        btn.setAttribute("aria-expanded", "true");
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      }
+    });
+  });
+
+  /* Service card "Learn more" pre-selects service in quote form */
+  document.querySelectorAll(".service-card").forEach(function(card){
+    var link = card.querySelector(".service-learn");
+    var serviceName = card.getAttribute("data-service");
+    if (!link || !serviceName) return;
+    link.addEventListener("click", function(){
+      var select = document.getElementById("f-service");
+      if (!select) return;
+      var plain = serviceName.replace(/&amp;/g, "&");
+      for (var i = 0; i < select.options.length; i++){
+        if (select.options[i].text === plain){ select.selectedIndex = i; break; }
+      }
+    });
+  });
+
+  /* Quote form: opens the user's email client with a pre-filled enquiry */
+  var form = document.getElementById("quote-form");
+  var status = document.getElementById("form-status");
+  if (form){
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      var name = form.name.value.trim();
+      var email = form.email.value.trim();
+      var phone = form.phone.value.trim();
+      var service = form.service.value;
+      var message = form.message.value.trim();
+      if (!name || !email){
+        status.textContent = "Please add your name and email so we can reply.";
+        return;
+      }
+      var subject = "Free quote request — " + service;
+      var body = "Name: " + name + "\nEmail: " + email + "\nPhone: " + (phone || "—") +
+        "\nInterested in: " + service + "\n\nMessage:\n" + (message || "—");
+      var mailto = "mailto:northstarstudiosgrowth@gmail.com?subject=" +
+        encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+      window.location.href = mailto;
+      status.textContent = "Opening your email app to send this to northstarstudiosgrowth@gmail.com — or call 07592 881276 if that's easier.";
+    });
+  }
+
+  /* Hero canvas: a quiet constellation with one connecting "north star" trajectory line */
+  var canvas = document.getElementById("hero-canvas");
+  if (canvas && canvas.getContext){
+    var ctx = canvas.getContext("2d");
+    var stars = [];
+    var W, H, DPR;
+
+    function resize(){
+      var hero = document.getElementById("home");
+      W = hero.offsetWidth;
+      H = hero.offsetHeight;
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = W * DPR;
+      canvas.height = H * DPR;
+      canvas.style.width = W + "px";
+      canvas.style.height = H + "px";
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      seedStars();
+    }
+
+    function seedStars(){
+      var count = Math.max(40, Math.round((W * H) / 15000));
+      stars = [];
+      for (var i = 0; i < count; i++){
+        stars.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          r: Math.random() * 1.3 + 0.4,
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.4 + Math.random() * 0.6
+        });
+      }
+    }
+
+    /* A gentle arcing "growth trajectory" line, like a plotted path to a guide star */
+    function trajectoryPoint(t, time){
+      var x = W * 0.06 + t * (W * 0.9);
+      var baseY = H * 0.82 - Math.pow(t, 1.35) * (H * 0.62);
+      var wobble = Math.sin(t * 6 + time * 0.0004) * 4;
+      return { x: x, y: baseY + wobble };
+    }
+
+    var lastTs = 0;
+    function draw(ts){
+      ctx.clearRect(0, 0, W, H);
+
+      /* stars */
+      for (var i = 0; i < stars.length; i++){
+        var s = stars[i];
+        var tw = 0.5 + 0.5 * Math.sin((reduceMotion ? 0 : ts * 0.0012 * s.speed) + s.phase);
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(228,187,99," + (0.15 + tw * 0.5) + ")";
+        ctx.fill();
+      }
+
+      /* trajectory path */
+      ctx.beginPath();
+      var steps = 60;
+      for (var j = 0; j <= steps; j++){
+        var t = j / steps;
+        var p = trajectoryPoint(t, reduceMotion ? 0 : ts);
+        if (j === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+      }
+      var grad = ctx.createLinearGradient(0, 0, W, 0);
+      grad.addColorStop(0, "rgba(199,154,68,0)");
+      grad.addColorStop(0.65, "rgba(199,154,68,0.55)");
+      grad.addColorStop(1, "rgba(228,187,99,0.9)");
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.4;
+      ctx.stroke();
+
+      /* guide star at path end */
+      var endP = trajectoryPoint(1, reduceMotion ? 0 : ts);
+      var pulse = reduceMotion ? 1 : 0.7 + 0.3 * Math.sin(ts * 0.003);
+      ctx.beginPath();
+      ctx.arc(endP.x, endP.y, 3.2 * pulse, 0, Math.PI * 2);
+      ctx.fillStyle = "#E4BB63";
+      ctx.shadowColor = "#E4BB63";
+      ctx.shadowBlur = 14 * pulse;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      if (!reduceMotion) requestAnimationFrame(draw);
+    }
+
+    resize();
+    window.addEventListener("resize", resize);
+    requestAnimationFrame(draw);
+    if (reduceMotion) draw(0);
+  }
+})();
+</script>
+
